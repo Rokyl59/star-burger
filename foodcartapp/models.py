@@ -68,7 +68,7 @@ class Product(models.Model):
         'цена',
         max_digits=8,
         decimal_places=2,
-        validators=[MinValueValidator(0)]
+        validators=[MinValueValidator(1)]
     )
     image = models.ImageField(
         'картинка'
