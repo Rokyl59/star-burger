@@ -7,3 +7,5 @@ phonenumbers==8.13.6
 django-filter==22.1
 djangorestframework==3.14.0
 Markdown==3.4.1
+geopy==2.3.0
+requests==2.28.2
