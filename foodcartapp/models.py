@@ -12,6 +12,11 @@ ORDER_STATUS = [
     ('completed', 'Доставлен'),
 ]
 
+PAYMENT_METHOD = [
+    ('cash', 'Наличностью'),
+    ('online', 'Электронно'),
+]
+
 
 class Restaurant(models.Model):
     name = models.CharField(
@@ -183,6 +188,12 @@ class Order(models.Model):
         'Дата доставки',
         null=True,
         blank=True,
+        db_index=True,
+    )
+    payment = models.CharField(
+        'Способ оплаты',
+        max_length=20,
+        choices=PAYMENT_METHOD,
         db_index=True,
     )
     objects = OrderQuerySet.as_manager()
