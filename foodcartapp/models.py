@@ -66,7 +66,7 @@ class Restaurant(models.Model):
                     api_key,
                     self.address,
                 )
-            except requests.exceptions.HTTPError:
+            except (requests.exceptions.HTTPError, ValueError):
                 self.latitude = None
                 self.longitude = None
 
