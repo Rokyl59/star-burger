@@ -30,7 +30,6 @@ class Restaurant(models.Model):
         max_length=100,
         blank=True,
     )
-    __original_address = None
     contact_phone = models.CharField(
         'контактный телефон',
         max_length=50,
@@ -53,25 +52,6 @@ class Restaurant(models.Model):
 
     def __str__(self):
         return self.name
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.__original_address = self.address
-
-    def save(self, force_insert=False, force_update=False, *args, **kwargs):
-        if self.address != self.__original_address:
-            api_key = settings.YANDEX_GEO_APIKEY
-            try:
-                self.latitude, self.longitude = fetch_coordinates(
-                    api_key,
-                    self.address,
-                )
-            except (requests.exceptions.HTTPError, ValueError):
-                self.latitude = None
-                self.longitude = None
-
-        super().save(force_insert, force_update, *args, **kwargs)
-        self.__original_address = self.address
 
 
 class ProductQuerySet(models.QuerySet):
@@ -184,17 +164,6 @@ class Order(models.Model):
         max_length=100,
         db_index=True,
     )
-    __original_address = None
-    longitude = models.FloatField(
-        'Долгота',
-        null=True,
-        blank=True,
-    )
-    latitude = models.FloatField(
-        'Широта',
-        null=True,
-        blank=True,
-    )
     firstname = models.CharField(
         'Имя',
         max_length=30,
@@ -211,7 +180,7 @@ class Order(models.Model):
         'Статус заказа',
         max_length=20,
         choices=ORDER_STATUS,
-        default='created',
+        default='01_created',
         db_index=True,
     )
     comment = models.TextField(
@@ -257,25 +226,6 @@ class Order(models.Model):
 
     def __str__(self):
         return f'{self.firstname} {self.lastname} {self.address}'
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.__original_address = self.address
-
-    def save(self, force_insert=False, force_update=False, *args, **kwargs):
-        if self.address != self.__original_address:
-            api_key = settings.YANDEX_GEO_APIKEY
-            try:
-                self.latitude, self.longitude = fetch_coordinates(
-                    api_key,
-                    self.address,
-                )
-            except requests.exceptions.HTTPError:
-                self.latitude = None
-                self.longitude = None
-
-        super().save(force_insert, force_update, *args, **kwargs)
-        self.__original_address = self.address
 
 
 class OrderElement(models.Model):
